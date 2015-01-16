@@ -38,24 +38,24 @@ p {
 }
 
 #title1 {
-  max-width: 400px;
+  max-width: 360px;
   margin-right: 10px
 }
 
 #title2 {
-  max-width: 400px;
+  max-width: 360px;
   margin-right: 10px
 }
 
 #book1 {
   overflow-y: scroll;
-  height: 500px !important;
+  height: 450px !important;
   margin-right: 10px
 }
 
 #book2 {
   overflow-y: scroll;
-  height: 500px !important;
+  height: 450px !important;
 }
 
 .word:hover {
@@ -71,13 +71,13 @@ p {
 
 
 </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
   <div id="wrapper">
-    <h1>How far will you get with one hundred words?</h1>
-    <h2>Or, "judging a book by its colors"</h2>
+    <h1>The colours of books</h1>
+    <h2>- Judging a book by its colours</h2>
   </br>
     <div id="wrapper1">
       <div id="title1"><p>The little prince, Antoine de Saint-Exupéry 1943</p></div>
@@ -86,203 +86,149 @@ p {
     </div>
 
     <div id="wrapper2"
-      <div id="title2"><p>Hamlet, William Shakespeare 1603</p></div>
+      <div id="title2"><p>Hamlet, William Shakespeare 1600</p></div>
       <div id="book2"></div>
       <div id="result2"></div>
     </div>
   </div>
-    <script type="text/javascript">
+
+<script type="text/javascript">
 
 
-  var margin = {top: 0, right: 10, bottom: 0, left: 10},
-  width = 400 - margin.left - margin.right,
-  height = 50000 - margin.top - margin.bottom;
+var margin = {top: 0, right: 20, bottom: 0, left: 20},
+width = 360 - margin.left - margin.right,
+height = 5000 - margin.top - margin.bottom;
 
-  
-  var data1 = prince.split(" "),
-      data2 = hamlet.split(" ");
 
+var data1 = prince.split(" "),
+    data2 = hamlet.split(" ");
+
+var commonObj = {};
+
+for (var i = 0; i < common.length; i++) {
+  commonObj[common[i]] = i;
+}
+
+
+function isCommon(word) {
+  return commonObj[word] != undefined;
+}
+
+function countWords(words, target) {
   var commonNo = 0;
-  var complexNo =0;
+  var complexNo = 0;
 
-for (var i = 0; i < data1.length; i++) {
-  var found = $.inArray(data1[i], common);
-  if (found < 0) {
-    complexNo++;
-  } else {
-    commonNo++;
+  for (var i = 0; i < words.length; i++) {
+    if (isCommon(words[i])) {
+      commonNo++;
+    } else {
+      complexNo++;
+    }
   }
+
+  var result1 = commonNo/(commonNo+complexNo)*100
+  $(target).html("<p>" + Math.round(result1) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
+
 }
 
-var result1 = commonNo/(commonNo+complexNo)*100
-$('#result1').html("<p>" + Math.round(result1) +"% written with hundred most common words </p> <p>" + commonNo+complexNo + " words in total </p>" );
+countWords(data1, "#result1");
+countWords(data2, "#result2");
 
-var commonNo = 0;
-var complexNo =0;
-
-for (var i = 0; i < data2.length; i++) {
-  var found = $.inArray(data1[i], common);
-  if (found < 0) {
-    complexNo++;
-  } else {
-    commonNo++;
-  }
-}
-
-var result2 = commonNo/(commonNo+complexNo)*100
-$('#result2').html("<p>" + Math.round(result2) +"% written with hundred most common words </p> <p>" + commonNo+complexNo + " words in total </p>" );
-
-  // creates a linear color scale
-  var bwcolor = d3.scale.linear()
-    .domain([ 0, common.length-1])
-    .range(colorbrewer.Greys[2]);
+// creates a linear color scale
+var bwcolor = d3.scale.linear()
+  .domain([ 0, common.length-1])
+  .range(colorbrewer.Greys[2]);
 
 
-    // creates a linear opacity scale
-  var opacityscale = d3.scale.linear()
-    .domain([ 0, 10])
-    .range([0.8, 0.3]);
+// creates a linear opacity scale
+var opacityscale = d3.scale.linear()
+  .domain([ 0, 10])
+  .range([0.9, 0.2]);
 
 
-  console.log(data1);
 
-  var svg1 = d3.select("#book1").append("svg")
+function drawSVG(foo) {
+  return foo.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.bottom + margin.top)
     .style("margin-left", -margin.left)
     .style("margin.right", -margin.right)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  
-  var svg2 = d3.select("#book2").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.bottom + margin.top)
-    .style("margin-left", -margin.left)
-    .style("margin.right", -margin.right)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+}
 
-var boxside = 6;
-var widthfactor = 10;
+var svg1 = drawSVG(d3.select("#book1"));
+var svg2 = drawSVG(d3.select("#book2"));
+
+
+var boxside = 4;
+var widthfactor = 1;
 var textadjust = 3;
 var commoncolor = "#E71D36";
-var complexcolor = "#D2E4C4"
+var complexcolor = "#D2E4C4";
 
+
+function drawRect(foo) {
+  foo.append("rect")
+    .classed("word", true)
+    .attr("x", function(d, i) {
+      return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
+    })
+    .attr("y", function(d,i) {
+      return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
+    })
+    .attr("width", boxside*widthfactor)
+    .attr("height", boxside)
+    .style("fill", function(d) {
+        return isCommon(d) ? commoncolor : complexcolor;
+    })
+    .style("opacity", function(d) {
+      return opacityscale(d.length);
+    })
+    .style("stroke", "white")
+    .style("stroke-width", "1px")
+    ;
+}
+
+function drawText(foo) {
+  foo.append("text")
+    .classed("text1", true)
+    .text(function(d) {
+      return d;
+    })
+    .attr("x", function(d, i) {
+      return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
+    })
+    .attr("y", function(d,i) {
+      return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
+    })
+    .attr("dx", 2)
+    .attr("dy", textadjust)
+    .attr("width", boxside*widthfactor)
+    .attr("height", boxside)
+    .style("opacity", 0)
+    .style("font-size", textadjust)
+    .style("font-weight", 100)
+    .style("text-transform", "lowercase")
+    .style("font-style", "italic")
+    .style("fill", function(d) {
+      return isCommon(d) ? "white" : "grey";
+    });
+}
 
 var g1 = svg1.selectAll("g")
-  .data(data1);
+  .data(data1)
+  .enter()
+  .call(drawRect)
+  .call(drawText);
 
 var g2 = svg2.selectAll("g")
-  .data(data2);
+  .data(data2)
+  .enter()
+  .call(drawRect)
+  .call(drawText);
 
 
-g1.enter().append("rect")
-  .classed("word", true)
-  .attr("x", function(d, i) {
-    return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
-  })
-  .attr("y", function(d,i) {
-    return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
-  })
-  .attr("width", boxside*widthfactor)
-  .attr("height", boxside)
-  .style("fill", function(d) {
-    var found = $.inArray(d, common);
-    if (found < 0) {
-      return complexcolor;
-    } else {
-      return commoncolor; //return bwcolor(found);
-    }
-  })
-  .style("opacity", function(d) {
-    return opacityscale(d.length);
-  })
-  .style("stroke", "white")
-  .style("stroke-width", "1px")
-  ;
-
-g2.enter().append("rect")
-  .classed("word", true)
-  .attr("x", function(d, i) {
-    return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
-  })
-  .attr("y", function(d,i) {
-    return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
-  })
-  .attr("width", boxside*widthfactor)
-  .attr("height", boxside)
-  .style("fill", function(d) {
-    var found = $.inArray(d, common);
-    if (found < 0) {
-      return complexcolor;
-    } else {
-      return commoncolor; //return bwcolor(found);
-    }
-  })
-  .style("opacity", function(d) {
-    return opacityscale(d.length);
-  })
-  .style("stroke", "white")
-  .style("stroke-width", "1px")
-  ;
-
-
-g1.enter().append("text")
-  .classed("text1", true)
-  .text(function(d) {
-    return d;
-  })
-  .attr("x", function(d, i) {
-    return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
-  })
-  .attr("y", function(d,i) {
-    return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
-  })
-  .attr("dx", 2)
-  .attr("dy", textadjust)
-  .attr("width", boxside*widthfactor)
-  .attr("height", boxside)
-  .style("font-size", textadjust)
-  .style("font-weight", 100)
-  .style("text-transform", "lowercase")
-  .style("font-style", "italic")
-  .style("fill", function(d) {
-    var found = $.inArray(d, common);
-    if (found < 0) {
-      return "teal";
-    } else {
-      return "white"; //return bwcolor(found);
-    }
-  });
-
-
-g2.enter().append("text")
-  .classed("text2", true)
-  .text(function(d) {
-    return d;
-  })
-  .attr("x", function(d, i) {
-    return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
-  })
-  .attr("y", function(d,i) {
-    return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
-  })
-  .attr("dx", 2)
-  .attr("dy", textadjust)
-  .attr("width", boxside*widthfactor)
-  .attr("height", boxside)
-  .style("font-size", textadjust)
-  .style("font-weight", 100)
-  .style("text-transform", "lowercase")
-  .style("font-style", "italic")
-  .style("fill", function(d) {
-    var found = $.inArray(d, common);
-    if (found < 0) {
-      return "teal";
-    } else {
-      return "white"; //return bwcolor(found);
-    }
-  });
-    </script>
-  </body>
+</script>
+</body>
 </html>
