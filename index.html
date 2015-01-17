@@ -2,15 +2,21 @@
 <html>
 
   <head>
-   <script src="d3.min.js" charset="utf-8"></script>
-   <meta charset="UTF-8">
-   <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic' rel='stylesheet' type='text/css'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript" >
-    </script>
+    <meta charset="UTF-8">
+
+    <link rel='stylesheet' href='spectrum.css'/>
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic' rel='stylesheet' type='text/css'>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+    
     <script src="colorbrewer.js" type="text/javascript"></script>
-    <script src="thelittleprince.js" type="text/javascript"></script>
     <script src="hamlet.js" type="text/javascript"></script>
+    <script src="thelittleprince.js" type="text/javascript"></script>
+
+    <script src="d3.min.js" charset="utf-8"></script>
+    <script src='spectrum.js'></script>
     <script src="hundred.js" type="text/javascript"></script>
+
 <style type="text/css">
 
 body {
@@ -68,12 +74,22 @@ p {
   -webkit-transition: opacity .10s ease-in-out;
 }
 
+.full-spectrum .sp-palette {
+max-width: 200px;
+}
+
 
 
 </style>
 </head>
 
 <body>
+
+  <p><input type='text' id="full" style=""/>  Color for the common words. Here set to #e71d36</p>
+  <p><input type='text' id="full2" style=""/>  Color for the complex words. Here set to #D2E4C4</p>
+  <p><input type='text' id="boxinput" style=""/>  Height for the "rows", here set to 10 (press enter to change)</p>
+  <p><input type='text' id="widthinput" style=""/>  Length of the boxes compared to height. 1 = square. (press enter to change)</p>
+
 
   <div id="wrapper">
     <h1>The colors of books</h1>
@@ -93,6 +109,113 @@ p {
   </div>
 
 <script type="text/javascript">
+
+$("#full").spectrum({
+    color: "#E71D36",
+    showInput: true,
+    className: "full-spectrum",
+    showInitial: true,
+    showPalette: true,
+    showSelectionPalette: true,
+    maxPaletteSize: 10,
+    preferredFormat: "hex",
+    localStorageKey: "spectrum.demo",
+    move: function (color) {
+        
+    },
+    show: function () {
+    
+    },
+    beforeShow: function () {
+    
+    },
+    hide: function () {
+    
+    },
+    change: function(color) {
+      commoncolor = color.toHexString(); // #ff0000
+      console.log(commoncolor);
+      draw();
+        
+    },
+    palette: [
+        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+        ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+        ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+        "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+        "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+        "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+        "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+        "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+        "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+        "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+        "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+    ]
+});
+
+$("#full2").spectrum({
+    color: "#D2E4C4",
+    showInput: true,
+    className: "full-spectrum",
+    showInitial: true,
+    showPalette: true,
+    showSelectionPalette: true,
+    maxPaletteSize: 10,
+    preferredFormat: "hex",
+    localStorageKey: "spectrum.demo",
+    move: function (color) {
+        
+    },
+    show: function () {
+    
+    },
+    beforeShow: function () {
+    
+    },
+    hide: function () {
+    
+    },
+    change: function(color) {
+      complexcolor = color.toHexString(); // #ff0000
+      console.log(complexcolor);
+      draw();
+        
+    },
+    palette: [
+        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+        ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+        ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+        "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+        "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+        "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+        "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+        "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+        "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+        "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+        "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+    ]
+});
+
+
+$('#boxinput').keypress(function(event) {
+      if (event.keyCode == 13) {
+          boxside = $("#boxinput").attr('value') *1;
+          draw();
+      }
+});
+
+$('#widthinput').keypress(function(event) {
+      if (event.keyCode == 13) {
+          widthfactor = $("#widthinput").attr('value') *1;
+          draw();
+      }
+});
 
 
 var margin = {top: 0, right: 20, bottom: 0, left: 20},
@@ -115,19 +238,15 @@ function isCommon(word) {
 }
 
 function countWords(words, target) {
-  var commonNo = 0;
-  var complexNo = 0;
 
-  for (var i = 0; i < words.length; i++) {
-    if (isCommon(words[i])) {
-      commonNo++;
-    } else {
-      complexNo++;
-    }
-  }
+  //words.filter genererar en lista av alla words där isCommon = true
+  var commonNo = words.filter(isCommon).length;
+  var complexNo = words.length - commonNo;
 
-  var result1 = commonNo/(commonNo+complexNo)*100
-  $(target).html("<p>" + Math.round(result1) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
+
+  var percent = commonNo/(commonNo+complexNo)*100;
+
+  $(target).html("<p>" + Math.round(percent) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
 
 }
 
@@ -152,25 +271,31 @@ function drawSVG(foo) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.bottom + margin.top)
     .style("margin-left", -margin.left)
-    .style("margin.right", -margin.right)
-  .append("g")
+    .style("margin.right", -margin.right);
+}
+
+function makeG(foo) {
+  return foo.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
 var svg1 = drawSVG(d3.select("#book1"));
 var svg2 = drawSVG(d3.select("#book2"));
 
+var group1A = makeG(svg1);
+var group1B = makeG(svg1);
+var group2A = makeG(svg2);
+var group2B = makeG(svg2);
 
-var boxside = 4;
+var boxside = 10;
 var widthfactor = 1;
 var textadjust = 3;
 var commoncolor = "#E71D36";
 var complexcolor = "#D2E4C4";
 
 
-function drawRect(foo) {
-  foo.append("rect")
-    .classed("word", true)
+function drawRect(rect) {
+  rect.classed("word", true)
     .attr("x", function(d, i) {
       return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
     })
@@ -190,9 +315,9 @@ function drawRect(foo) {
     ;
 }
 
-function drawText(foo) {
-  foo.append("text")
-    .classed("text1", true)
+function drawText(text) {
+  text.classed("text", true)
+    .classed("word", true)
     .text(function(d) {
       return d;
     })
@@ -216,18 +341,31 @@ function drawText(foo) {
     });
 }
 
-var g1 = svg1.selectAll("g")
-  .data(data1)
-  .enter()
-  .call(drawRect)
-  .call(drawText);
+function drawBook(rect, text, words) {
 
-var g2 = svg2.selectAll("g")
-  .data(data2)
-  .enter()
-  .call(drawRect)
-  .call(drawText);
+  var bookrect = rect.selectAll("rect")
+    .data(words);
 
+  var booktext = text.selectAll("text")
+    .data(words);
+
+  //new
+  bookrect.enter().append("rect");
+  booktext.enter().append("text");
+
+  // new and existing
+  drawRect(bookrect);
+  drawText(booktext);
+
+}
+
+function draw() {
+ drawBook(group1A, group1B, data1);
+ drawBook(group2A, group2B, data2);
+
+};
+
+draw();
 
 </script>
 </body>
