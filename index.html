@@ -31,16 +31,25 @@ p {
   font-weight: 300;
 }
 
+.tiny {
+  font-size: 11px;
+}
 #wrapper {
-  width: 820px;
+  width: 680px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 40px;
 }
 
+.wrapper {
+  width: 840px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 10px;
+}
+
 #wrapper1 {
   float: left;
-  margin-right: 10px
 }
 
 #title1 {
@@ -64,6 +73,10 @@ p {
   height: 450px !important;
 }
 
+.book:hover {
+    cursor: pointer;
+}
+
 .word:hover {
     opacity: 0.2 !important;
 }
@@ -78,17 +91,34 @@ p {
 max-width: 200px;
 }
 
+.input {
+  width: 40px;
+  height: 25px;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 11pt;
+  border-width: 1px;
+  margin-left: 40px;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 
 
 </style>
 </head>
 
 <body>
+<div class=wrapper>
+  <p class="tiny">
+    <input type='text' id="full" style=""/>  Color of the common words. Here set to #e71d36          
+    <input type='text' id="boxinput" class="input"/>  &nbsp; &nbsp; Height of the 'rows', here 10. (Press enter to change)
+  </p>
 
-  <p><input type='text' id="full" style=""/>  Color for the common words. Here set to #e71d36</p>
-  <p><input type='text' id="full2" style=""/>  Color for the complex words. Here set to #D2E4C4</p>
-  <p><input type='text' id="boxinput" style=""/>  Height for the "rows", here set to 10 (press enter to change)</p>
-  <p><input type='text' id="widthinput" style=""/>  Length of the boxes compared to height. 1 = square. (press enter to change)</p>
+  <p class="tiny">
+    <input type='text' id="full2" style=""/>  Color of the complex words. Here set to #D2E4C4
+    <input type='text' id="widthinput" class="input"/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change)
+  </p>
+</div>
 
 
   <div id="wrapper">
@@ -97,13 +127,13 @@ max-width: 200px;
   </br>
     <div id="wrapper1">
       <div id="title1"><p>The little prince, Antoine de Saint-Exupéry 1943</p></div>
-      <div id="book1"></div>
+      <div id="book1" class="book"></div>
       <div id="result1"></div>
     </div>
 
     <div id="wrapper2"
       <div id="title2"><p>Hamlet, William Shakespeare 1600</p></div>
-      <div id="book2"></div>
+      <div id="book2" class="book"></div>
       <div id="result2"></div>
     </div>
   </div>
@@ -243,7 +273,6 @@ function countWords(words, target) {
   var commonNo = words.filter(isCommon).length;
   var complexNo = words.length - commonNo;
 
-
   var percent = commonNo/(commonNo+complexNo)*100;
 
   $(target).html("<p>" + Math.round(percent) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
@@ -262,7 +291,7 @@ var bwcolor = d3.scale.linear()
 // creates a linear opacity scale
 var opacityscale = d3.scale.linear()
   .domain([ 0, 10])
-  .range([0.9, 0.2]);
+  .range([1, 0.3]);
 
 
 
