@@ -120,6 +120,10 @@ max-width: 200px;
   </p>
 </div>
 
+<div id="Test">
+    abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+</div>
+
 
   <div id="wrapper">
     <h1>The colors of books</h1>
@@ -256,12 +260,43 @@ height = 5000 - margin.top - margin.bottom;
 var data1 = prince.split(" "),
     data2 = hamlet.split(" ");
 
+
+
 var commonObj = {};
 
 for (var i = 0; i < common.length; i++) {
   commonObj[common[i]] = i;
 }
 
+
+
+var dataObj1 = [];
+var dataObj2 = [];
+
+for (var i = 0; i < data1.length; i++) {
+  var cleanword = data1[i].replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+
+  dataObj1[i] = {
+    "word" : data1[i],
+    "cleanword" : cleanword,
+    "punctuation" : data1[i].length - cleanword.length,
+    "common" : isCommon(cleanword)
+  };
+}
+
+for (var i = 0; i < data2.length; i++) {
+  var cleanword = data2[i].replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+
+  dataObj2[i] = {
+    "word" : data2[i],
+    "cleanword" : cleanword,
+    "punctuation" : data2[i].length - cleanword.length,
+    "common" : isCommon(cleanword)
+  };
+}
+
+
+console.log(dataObj1);
 
 function isCommon(word) {
   return commonObj[word] != undefined;
