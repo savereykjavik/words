@@ -110,7 +110,7 @@ max-width: 200px;
 <body>
 <div class=wrapper>
   <p class="tiny">
-    <input type='text' id="full" style=""/>  Color of the common words. Here set to #e71d36        
+    <input type='text' id="full" style=""/>  Color of the common words. Here set to #64a344        
     <input type='text' id="boxinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change)
   </p>
 
@@ -141,7 +141,7 @@ max-width: 200px;
 <script type="text/javascript">
 
 $("#full").spectrum({
-    color: "#E71D36",
+    color: "#64a344",
     showInput: true,
     className: "full-spectrum",
     showInitial: true,
@@ -300,7 +300,9 @@ function drawSVG(foo) {
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.bottom + margin.top)
     .style("margin-left", -margin.left)
-    .style("margin.right", -margin.right);
+    .style("margin.right", -margin.right)
+    .style("fill", complexcolor)
+    ;
 }
 
 function makeG(foo) {
@@ -316,8 +318,8 @@ var group1B = makeG(svg1);
 var group2A = makeG(svg2);
 var group2B = makeG(svg2);
 
-var boxside = 10;
-var widthfactor = 1;
+var boxside = 1;
+var widthfactor = 20;
 var textadjust = 3;
 var commoncolor = "#E71D36";
 var complexcolor = "#D2E4C4";
@@ -340,7 +342,7 @@ function drawRect(rect) {
       return opacityscale(d.length);
     })
     .style("stroke", "white")
-    .style("stroke-width", "1px")
+    .style("stroke-width", "0px")
     ;
 }
 
