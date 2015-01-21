@@ -41,7 +41,7 @@ p {
 }
 
 .wrapper {
-  width: 760px;
+  width: 800px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 10px;
@@ -138,13 +138,13 @@ max-width: 200px;
 <div class=wrapper>
   <p class="tiny">
     <!-- <input type='text' id="full" style=""/>  Color of the common words.       -->
-    <input type='text' id="boxinput" class="input" placeholder='20'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change. textsize/length of boxes doesnt change)
-    <input type='text' id="full2" style=""/>  Color of the complex words.
+    <input type='text' id="boxinput" class="input" placeholder='20'/>  &nbsp; &nbsp; Height of the 'rows'. Press enter to change. (The length of boxes doesn't change because it's determined by textsize) </br>
+    <input type='text' id="textsizeinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good. (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page).
   </p>
 
-  <p class="tiny">
-    <input type='text' id="textsizeinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Textsize (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page). </br>
-    <input type='checkbox' id="checkbox" style=""/> See the text
+  <p class="tiny" style="margin-left: 40px;">
+    <input type='text' id="full2" style=""/>  Color of the complex words.
+    <input type='checkbox' id="checkbox" style=""/> See the text.
     
     <!-- <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change) -->
   </p>
