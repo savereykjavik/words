@@ -5,14 +5,10 @@
     <meta charset="UTF-8">
 
     <link rel='stylesheet' href='spectrum.css'/>
-    <!-- <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,300italic' rel='stylesheet' type='text/css'> -->
-
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:300italic,300' rel='stylesheet' type='text/css'>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
-    
-    <script src="colorbrewer.js" type="text/javascript"></script>
-    <script src="hamlet.js" type="text/javascript"></script>
-    <script src="thelittleprince.js" type="text/javascript"></script>
 
+    <script src="colorbrewer.js" type="text/javascript"></script>
     <script src="d3.min.js" charset="utf-8"></script>
     <script src='spectrum.js'></script>
     <script src="hundred.js" type="text/javascript"></script>
@@ -20,7 +16,7 @@
 <style type="text/css">
 
 body {
-  font-family: "Exo 2", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: 'Merriweather', serif;
 }
 
 h2 {
@@ -35,14 +31,16 @@ p {
   font-size: 12px;
 }
 #wrapper {
-  width: 690px;
+  width: 760px;
+  height: 700px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 .wrapper {
-  width: 840px;
+  width: 760px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 10px;
@@ -50,6 +48,11 @@ p {
 
 #wrapper1 {
   float: left;
+  width: 380px;
+}
+#wrapper2 {
+  width: 380px;
+  float: right;
 }
 
 #title1 {
@@ -60,6 +63,13 @@ p {
 #title2 {
   max-width: 360px;
   margin-right: 10px
+}
+
+#test {
+  font-family: 'Merriweather', serif;
+  font-size: 6pt;
+  position: fixed;
+  left: -99999px;
 }
 
 #book1 {
@@ -81,6 +91,21 @@ p {
     opacity: 0.2 !important;
 }
 
+.text {
+  opacity: 1 !important;
+  font-family: 'Merriweather', serif;
+}
+
+.text:hover {
+    opacity: 0.7 !important;
+}
+
+.text {
+  transition: opacity .10s ease-in-out;
+  -moz-transition: opacity .10s ease-in-out;
+  -webkit-transition: opacity .10s ease-in-out;
+}
+
 .word {
   transition: opacity .10s ease-in-out;
   -moz-transition: opacity .10s ease-in-out;
@@ -93,9 +118,9 @@ max-width: 200px;
 
 .input {
   width: 40px;
-  height: 25px;
+  height: 20px;
   font-family: "Helvetica Neue", Helvetica, sans-serif;
-  font-size: 11pt;
+  font-size: 10pt;
   border-width: 1px #91765d;
   margin-left: 40px;
   padding-left: 10px;
@@ -108,39 +133,41 @@ max-width: 200px;
 </head>
 
 <body>
+
+<!-- wrapper for the top section that contains the toggle/controls to change color etc -->
 <div class=wrapper>
   <p class="tiny">
-    <input type='text' id="full" style=""/>  Color of the common words. Here set to #64a344        
-    <input type='text' id="boxinput" class="input" placeholder='1'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change)
+    <input type='text' id="full" style=""/>  Color of the common words.      
+    <input type='text' id="boxinput" class="input" placeholder='12'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change)
   </p>
 
   <p class="tiny">
-    <input type='text' id="full2" style=""/>  Color of the complex words. Here set to #D2E4C4
-    <input type='text' id="widthinput" class="input" placeholder='20'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change)
+    <input type='text' id="full2" style=""/>  Color of the complex words.
+    <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change)
   </p>
 </div>
 
-<div id="Test">
-    abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
-</div>
+<span id="test">
+</span>
 
-
-  <div id="wrapper">
-    <h1>The colors of books</h1>
-    <h2>- Judging a book by its colors</h2>
-  </br>
-    <div id="wrapper1">
-      <div id="title1"><p>The little prince, Antoine de Saint-Exupéry 1943</p></div>
-      <div id="book1" class="book"></div>
-      <div id="result1"></div>
-    </div>
-
-    <div id="wrapper2"
-      <div id="title2"><p>Hamlet, William Shakespeare 1600</p></div>
-      <div id="book2" class="book"></div>
-      <div id="result2"></div>
-    </div>
+<!-- wrapper for our main section -->
+<div id="wrapper">
+  <h1>The colors of books</h1>
+  <h2>- Judging a book by its colors</h2>
+</br>
+  <div id="wrapper1">
+    <div id="title1"><p>The little prince </br>Antoine de Saint-Exupéry 1943</p></div>
+    <div id="book1" class="book"></div>
+    <div id="result1"></div>
   </div>
+
+  <div id="wrapper2">
+    <div id="title2"><p>Hamlet</br> William Shakespeare 1600</p></div>
+    <div id="book2" class="book"></div>
+    <div id="result2"></div>
+  </div>
+</div>
+</br>
 
 <script type="text/javascript">
 
@@ -257,51 +284,110 @@ width = 360 - margin.left - margin.right,
 height = 5000 - margin.top - margin.bottom;
 
 
-var data1 = prince.split(" "),
-    data2 = hamlet.split(" ");
 
-
-
+// create an object of the common words: "Word" : index
 var commonObj = {};
-
 for (var i = 0; i < common.length; i++) {
   commonObj[common[i]] = i;
 }
 
 
-
-var dataObj1 = [];
-var dataObj2 = [];
-
-for (var i = 0; i < data1.length; i++) {
-  var cleanword = data1[i].replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
-
-  dataObj1[i] = {
-    "word" : data1[i],
-    "cleanword" : cleanword,
-    "punctuation" : data1[i].length - cleanword.length,
-    "common" : isCommon(cleanword)
-  };
+// function to get width of a text in html
+function getWidth(word) {
+    return $("#test").text(word).width();
 }
 
-for (var i = 0; i < data2.length; i++) {
-  var cleanword = data2[i].replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+// function to layout one line of text
+function layoutLine(line, y, layout, xwidth) {
+    var x = 0;
+    var fill = width - xwidth;
+    var justify = fill < width * 0.2;
+    var add = justify ? fill / (line.length) : 0;
 
-  dataObj2[i] = {
-    "word" : data2[i],
-    "cleanword" : cleanword,
-    "punctuation" : data2[i].length - cleanword.length,
-    "common" : isCommon(cleanword)
-  };
+    line.forEach(function(word) {
+        var cleanword = word.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
+        var wordWidth = getWidth(word) + 3 + add;
+        layout.push({
+            "type": 'word',
+            "word": word,
+            "cleanword": cleanword,
+            "common" : isCommon(cleanword),
+            "x": x,
+            "y": y,
+            "add": add,
+            "width": wordWidth
+        });
+        x += wordWidth;
+    });
 }
 
+function layoutLines(lines) {
+    var y = 0;
+    var layout = [];
+    lines.forEach(function(line) {
+        var x = 0;
+        var workingLine = [];
+        line.forEach(function(word) {
+            if (word == "") return;
+            var wordWidth = getWidth(word) + 3;
+            if (x + wordWidth <= width) {
+                // line is not done
+                workingLine.push(word);
+                x += wordWidth;
+            } else {
+                // line is already done
+                // do something about it
+                layoutLine(workingLine, y, layout, x);
+                // prepare for next line
+                workingLine = [word];
+                x = wordWidth;
+                y++;
+            }
+        });
+        // layout any remainder of the line
+        if (workingLine.length > 0) {
+            layoutLine(workingLine, y, layout, x);
+        }
+        y++;
+    });
+    return layout;
+}
 
-console.log(dataObj1);
+// gets the textfile
+function getText(txtfile, callback) {
+  $.get( txtfile, function (text) {
+        var lines = window.lines = text.split('\n')
+            .map(function(line) {
+                return line.trim().split(/\s+/);
+            });
+        callback(lines);
+    });
+}
 
+// runs when all is loaded
+jQuery(function() {
+    getText( "books/littleprince.txt", function (lines) {
+        var layout = layoutLines(lines);
+        data = layout;
+        drawBook(group1A, group1B, data);
+        // countWords(data1, "#result1");
+        console.log(layout);
+    });
+    getText( "books/hamlet.txt", function (lines) {
+        var layout = layoutLines(lines);
+        data = layout;
+        drawBook(group2A, group2B, data);
+        // countWords(data1, "#result1");
+        console.log(layout);
+    });
+});
+
+// Checks if a word is common. Returns True/False
 function isCommon(word) {
   return commonObj[word] != undefined;
 }
 
+// Counts words and sends the result to target div
 function countWords(words, target) {
 
   //words.filter genererar en lista av alla words där isCommon = true
@@ -314,21 +400,19 @@ function countWords(words, target) {
 
 }
 
-countWords(data1, "#result1");
-countWords(data2, "#result2");
-
-// creates a linear color scale
+// Creates a linear color scale
 var bwcolor = d3.scale.linear()
   .domain([ 0, common.length-1])
   .range(colorbrewer.Greys[2]);
 
 
-// creates a linear opacity scale
+// Creates a linear opacity scale
 var opacityscale = d3.scale.linear()
   .domain([ 0, 10])
   .range([1, 0.3]);
 
 
+// D3 SVG and group layout
 
 function drawSVG(foo) {
   return foo.append("svg")
@@ -353,59 +437,73 @@ var group1B = makeG(svg1);
 var group2A = makeG(svg2);
 var group2B = makeG(svg2);
 
-var boxside = 1;
-var widthfactor = 20;
-var textadjust = 3;
-var commoncolor = "#64a344";
-var complexcolor = "#D2E4C4";
+// Parameters
 
+var boxside = 12;
+var widthfactor = 20;
+var commoncolor = "#d7b8e3";
+var complexcolor = "#D2E4C4";
+var bgcolor = "#FFFFFF"
+
+
+// D3 happens
+// Draws rectangles
 
 function drawRect(rect) {
   rect.classed("word", true)
     .attr("x", function(d, i) {
-      return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
+      return d.x;
     })
     .attr("y", function(d,i) {
-      return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
+      return d.y * boxside;
     })
-    .attr("width", boxside*widthfactor)
+    .attr("width", function(d) { return d.width; })
     .attr("height", boxside)
     .style("fill", function(d) {
-        return isCommon(d) ? commoncolor : complexcolor;
+      if (d.type == "fill") {
+        return bgcolor;
+      } else {
+        return d.common ? commoncolor : complexcolor;
+      }
     })
     .style("opacity", function(d) {
-      return opacityscale(d.length);
+      return opacityscale(d.word.length) *0.7;
     })
     .style("stroke", "white")
-    .style("stroke-width", "0px")
+    .style("stroke-width", "1.5pt")
     ;
 }
+
+// Draws text
 
 function drawText(text) {
   text.classed("text", true)
     .classed("word", true)
     .text(function(d) {
-      return d;
+      return d.word;
     })
     .attr("x", function(d, i) {
-      return i * boxside*widthfactor - width * Math.floor((i*boxside*widthfactor)/width);
+      return d.x;
     })
     .attr("y", function(d,i) {
-      return boxside + Math.floor((i*boxside*widthfactor)/width) * boxside;
+      return d.y * boxside;
     })
-    .attr("dx", 2)
-    .attr("dy", textadjust)
-    .attr("width", boxside*widthfactor)
+    .attr("dx", function(d) { return 1.5 + "px"; })
+    .attr("dy", "7pt")
+    .attr("width", function(d) { return d.width; })
     .attr("height", boxside)
-    .style("opacity", 0)
-    .style("font-size", textadjust)
-    .style("font-weight", 100)
-    .style("text-transform", "lowercase")
-    .style("font-style", "italic")
+    .style("opacity", 1)
+    .style("font-size", "6pt")
+    .style("letter-spacing", function(d) {
+      return d.add / (d.word.length -1) + "px";
+    })
+    // .style("font-weight", 100)
     .style("fill", function(d) {
-      return isCommon(d) ? "white" : "grey";
+      return d.common ? "#7b3496" : "#64a344";
     });
 }
+
+// Draw book
 
 function drawBook(rect, text, words) {
 
@@ -426,12 +524,12 @@ function drawBook(rect, text, words) {
 }
 
 function draw() {
- drawBook(group1A, group1B, data1);
- drawBook(group2A, group2B, data2);
+  drawBook(group1A, group1B, data1);
+  drawBook(group2A, group2B, data2);
 
 };
 
-draw();
+
 
 </script>
 </body>
