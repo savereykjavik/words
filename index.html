@@ -67,7 +67,7 @@ p {
 
 #test {
   font-family: 'Merriweather', serif;
-  font-size: 6pt;
+  font-size: 10pt;
   position: fixed;
   left: -99999px;
 }
@@ -97,7 +97,7 @@ p {
 }
 
 .text:hover {
-    opacity: 0.7 !important;
+    opacity: 1 !important;
 }
 
 .text {
@@ -137,13 +137,14 @@ max-width: 200px;
 <!-- wrapper for the top section that contains the toggle/controls to change color etc -->
 <div class=wrapper>
   <p class="tiny">
-    <input type='text' id="full" style=""/>  Color of the common words.      
-    <input type='text' id="boxinput" class="input" placeholder='12'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change)
+    <!-- <input type='text' id="full" style=""/>  Color of the common words.       -->
+    <input type='text' id="boxinput" class="input" placeholder='12'/>  &nbsp; &nbsp; Height of the 'rows'. (Press enter to change. textsize doesnt change..)
+    <input type='text' id="full2" style=""/>  Color of the complex words.
   </p>
 
   <p class="tiny">
-    <input type='text' id="full2" style=""/>  Color of the complex words.
-    <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change)
+    
+    <!-- <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change) -->
   </p>
 </div>
 
@@ -414,7 +415,7 @@ var bwcolor = d3.scale.linear()
 // Creates a linear opacity scale
 var opacityscale = d3.scale.linear()
   .domain([ 0, 10])
-  .range([1, 0.3]);
+  .range([1, 0.5]);
 
 // Creates a linear bluescale
 var commonBluescale = d3.scale.linear()
@@ -453,7 +454,7 @@ var group2B = makeG(svg2);
 
 // Parameters
 
-var boxside = 12;
+var boxside = 20;
 var widthfactor = 20;
 var commoncolor = "#d7b8e3";
 var complexcolor = "#D2E4C4";
@@ -477,8 +478,7 @@ function drawRect(rect) {
         return d.common ? commonBluescale(d.commoni) : complexcolor;
     })
     .style("opacity", function(d) {
-      return 1;
-      //return opacityscale(d.word.length) *0.7;
+      return d.common ? 0.9 : opacityscale(d.word.length) *0.7;
     })
     .style("stroke", "white")
     .style("stroke-width", "1.5pt")
@@ -500,11 +500,11 @@ function drawText(text) {
       return d.y * boxside;
     })
     .attr("dx", function(d) { return 1.5 + "px"; })
-    .attr("dy", "7pt")
+    .attr("dy", "11pt")
     .attr("width", function(d) { return d.width; })
     .attr("height", boxside)
     .style("opacity", 1)
-    .style("font-size", "6pt")
+    .style("font-size", "10pt")
     .style("letter-spacing", function(d) {
       return d.add / (d.word.length -1) + "px";
     })
