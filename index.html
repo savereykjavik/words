@@ -172,7 +172,7 @@ max-width: 200px;
 <script type="text/javascript">
 
 $("#full").spectrum({
-    color: "#64a344",
+    color: "#d7b8e3",
     showInput: true,
     className: "full-spectrum",
     showInitial: true,
@@ -312,6 +312,7 @@ function layoutLine(line, y, layout, xwidth) {
             "word": word,
             "cleanword": cleanword,
             "common" : isCommon(cleanword),
+            "commoni" : commonIndex(cleanword),
             "x": x,
             "y": y,
             "add": add,
@@ -386,7 +387,9 @@ jQuery(function() {
 function isCommon(word) {
   return commonObj[word] != undefined;
 }
-
+function commonIndex(word) {
+  return commonObj[word] != undefined ? commonObj[word] : -1;
+}
 // Counts words and sends the result to target div
 function countWords(words, target) {
 
@@ -400,17 +403,28 @@ function countWords(words, target) {
 
 }
 
+var bluerange = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
+var bluetextrange = ["#335D93", "#6685AE", "#99AEC9", "#CCD6E4", "#CCD6E4" ];
+
 // Creates a linear color scale
 var bwcolor = d3.scale.linear()
   .domain([ 0, common.length-1])
   .range(colorbrewer.Greys[2]);
-
 
 // Creates a linear opacity scale
 var opacityscale = d3.scale.linear()
   .domain([ 0, 10])
   .range([1, 0.3]);
 
+// Creates a linear bluescale
+var commonBluescale = d3.scale.linear()
+  .domain([0, 0.25*common.length, 0.5*common.length, 0.75*common.length, common.length])
+  .range(bluerange);
+
+// Creates a linear bluescale
+var blueText = d3.scale.linear()
+  .domain([0, 0.25*common.length, 0.5*common.length, 0.75*common.length, common.length])
+  .range(bluetextrange);
 
 // D3 SVG and group layout
 
@@ -460,14 +474,11 @@ function drawRect(rect) {
     .attr("width", function(d) { return d.width; })
     .attr("height", boxside)
     .style("fill", function(d) {
-      if (d.type == "fill") {
-        return bgcolor;
-      } else {
-        return d.common ? commoncolor : complexcolor;
-      }
+        return d.common ? commonBluescale(d.commoni) : complexcolor;
     })
     .style("opacity", function(d) {
-      return opacityscale(d.word.length) *0.7;
+      return 1;
+      //return opacityscale(d.word.length) *0.7;
     })
     .style("stroke", "white")
     .style("stroke-width", "1.5pt")
@@ -499,7 +510,7 @@ function drawText(text) {
     })
     // .style("font-weight", 100)
     .style("fill", function(d) {
-      return d.common ? "#7b3496" : "#64a344";
+      return d.common ? blueText(d.commoni) : "#64a344";
     });
 }
 
