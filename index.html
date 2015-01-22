@@ -143,11 +143,21 @@ max-width: 200px;
     <input type='text' id="textsizeinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good. (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page).
   </p>
 
-  <p class="tiny" style="margin-left: 40px;">
+  <p class="tiny">
     <input type='text' id="full2" style=""/>  Color of the complex words.
     <input type='checkbox' id="checkbox" style=""/> See the text.
     
     <!-- <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change) -->
+  </p>
+
+  <p class="tiny">
+    <form id="radios">
+  <input type="radio" name="thousands" value="one">1000
+  <input type="radio" name="thousands" value="two">2000
+  <input type="radio" name="thousands" value="three">3000
+  <input type="radio" name="thousands" value="four">4000
+  <input type="radio" name="thousands" value="five">5000
+</form>
   </p>
 </div>
 
@@ -296,6 +306,31 @@ $('#textsizeinput').keypress(function(event) {
       }
 });
 
+
+var one = thousand1;
+var two = thousand1.concat(thousand2);
+var three = thousand1.concat(thousand2).concat(thousand3);
+var four = thousand1.concat(thousand2).concat(thousand3).concat(thousand4);
+var five = thousand1.concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
+
+
+$("input[name=thousands]:radio").change(function () {
+  thousands = function() {
+    if ( $('input[name=thousands]:checked', '#radios').val() == "one") {
+      return one;
+    } else if ( $('input[name=thousands]:checked', '#radios').val() == "two") {
+      return two;
+    } else if ( $('input[name=thousands]:checked', '#radios').val() == "three") {
+      return three;
+    } else if ( $('input[name=thousands]:checked', '#radios').val() == "four") {
+      return four;
+    } else if ( $('input[name=thousands]:checked', '#radios').val() == "five") {
+      return five;
+    }
+  }
+  start();
+  });
+
 // END OF TOGGLES
 
 
@@ -304,12 +339,14 @@ var margin = {top: 0, right: 20, bottom: 0, left: 20},
 width = 360 - margin.left - margin.right,
 height = 5000 - margin.top - margin.bottom;
 
+var thousands = thousand1;
 
+thousands = thousand1.concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
 
 // create an object of the common words: "Word" : index
 var commonObj = {};
-for (var i = 0; i < thousand1.length; i++) {
-  commonObj[thousand1[i]] = i;
+for (var i = 0; i < thousands.length; i++) {
+  commonObj[thousands[i]] = i;
 }
 
 
@@ -437,7 +474,7 @@ var bluetextrange = ["#335D93", "#6685AE", "#99AEC9", "#CCD6E4", "#CCD6E4" ];
 
 // Creates a linear color scale
 var bwcolor = d3.scale.linear()
-  .domain([ 0, thousand1.length-1])
+  .domain([ 0, thousands.length-1])
   .range(colorbrewer.Greys[2]);
 
 // Creates a linear opacity scale
@@ -447,12 +484,12 @@ var opacityscale = d3.scale.linear()
 
 // Creates a linear bluescale
 var commonBluescale = d3.scale.linear()
-  .domain([0, 0.25*thousand1.length, 0.5*thousand1.length, 0.75*thousand1.length, thousand1.length])
+  .domain([0, 0.25*thousands.length, 0.5*thousands.length, 0.75*thousands.length, thousands.length])
   .range(bluerange);
 
 // Creates a linear bluescale
 var blueText = d3.scale.linear()
-  .domain([0, 0.25*thousand1.length, 0.5*thousand1.length, 0.75*thousand1.length, thousand1.length])
+  .domain([0, 0.25*thousands.length, 0.5*thousands.length, 0.75*thousands.length, thousands.length])
   .range(bluetextrange);
 
 // D3 SVG and group layout
@@ -482,15 +519,17 @@ var group2B = makeG(svg2);
 
 // Parameters
 
-var boxside = 20;
+var boxside = 16;
 var widthfactor = 20;
 var commoncolor = "#d7b8e3";
-var complexcolor = "#D2E4C4";
+var complexcolor = "#FFFFFF";
 var bgcolor = "#FFFFFF";
 var seetext = false;
 var data1;
 var data2;
-var textsize = 10;
+var textsize = 8;
+
+// set the css initially, to the textsize
 $("#test").css("font-size", textsize + "pt");
 
 $( "#checkbox" ).change(function() {
