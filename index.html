@@ -558,10 +558,13 @@ function drawRect(rect) {
         return d.common ? commonBluescale(d.commoni) : complexcolor;
     })
     .style("opacity", function(d) {
-      return d.common ? 0.9 : opacityscale(d.word.length) *0.7;
+      return 1;
+      //return d.common ? 0.9 : opacityscale(d.word.length) *0.7;
     })
-    .style("stroke", "white")
-    .style("stroke-width", "1.5pt")
+    .style("stroke", "#FFFFFF")
+    .style("stroke-width", function(d) {
+        return d.common ? "0.5pt" : "0pt";
+    })
     ;
 }
 
@@ -592,7 +595,8 @@ function drawText(text) {
     })
     // .style("font-weight", 100)
     .style("fill", function(d) {
-      return d.common ? blueText(d.commoni) : "#64a344";
+      //return d.common ? blueText(d.commoni) : "#64a344";
+      return d.common ? commonBluescale(d.commoni) : "#EEEEEE";
     });
 }
 
