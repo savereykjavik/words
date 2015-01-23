@@ -70,7 +70,8 @@ p {
 
 #test {
   font-family: 'Merriweather', serif;
-  font-size: 10pt;
+  font-stretch: extra-expanded;
+  font-size: 11pt;
   position: fixed;
   left: -99999px;
 }
@@ -90,12 +91,17 @@ p {
     cursor: pointer;
 }
 
-.word:hover {
-    opacity: 0.2 !important;
+.rect:hover {
+    opacity: 0.1 !important;
+}
+
+.rect {
 }
 
 .text {
   font-family: 'Merriweather', serif;
+  font-stretch: extra-expanded;
+  pointer-events: none;
 }
 
 .text:hover {
@@ -261,7 +267,6 @@ $("#full2").spectrum({
       console.log(complexcolor);
       drawBook(group1A, group1B, data1);
       drawBook(group2A, group2B, data2);
-        
     },
     palette: [
         ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
@@ -306,7 +311,6 @@ $('#textsizeinput').keypress(function(event) {
       }
 });
 
-
 var one = thousand1;
 var two = thousand1.concat(thousand2);
 var three = thousand1.concat(thousand2).concat(thousand3);
@@ -315,18 +319,16 @@ var five = thousand1.concat(thousand2).concat(thousand3).concat(thousand4).conca
 
 
 $("input[name=thousands]:radio").change(function () {
-  thousands = function() {
     if ( $('input[name=thousands]:checked', '#radios').val() == "one") {
-      return one;
+      thousands = one;
     } else if ( $('input[name=thousands]:checked', '#radios').val() == "two") {
-      return two;
+      thousands = two;
     } else if ( $('input[name=thousands]:checked', '#radios').val() == "three") {
-      return three;
+      thousands = three;
     } else if ( $('input[name=thousands]:checked', '#radios').val() == "four") {
-      return four;
+      thousands = four;
     } else if ( $('input[name=thousands]:checked', '#radios').val() == "five") {
-      return five;
-    }
+      thousands = five;
   }
   start();
   });
@@ -340,8 +342,6 @@ width = 390 - margin.left - margin.right,
 height = 5000 - margin.top - margin.bottom;
 
 var thousands = thousand1;
-
-thousands = thousand1.concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
 
 // create an object of the common words: "Word" : index
 var commonObj = {};
@@ -469,7 +469,9 @@ function countWords(words, target) {
 
 }
 
-var bluerange = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
+var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
+var cyanblue = ["#237475", "#3E968F", "#5CADAA", "#85D4C4", "#ABE8D9"];
+var emelieblue = ["#117475", "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
 var bluetextrange = ["#335D93", "#6685AE", "#99AEC9", "#CCD6E4", "#CCD6E4" ];
 
 // Creates a linear color scale
@@ -483,9 +485,9 @@ var opacityscale = d3.scale.linear()
   .range([1, 0.5]);
 
 // Creates a linear bluescale
-var commonBluescale = d3.scale.linear()
-  .domain([0, 0.25*thousands.length, 0.5*thousands.length, 0.75*thousands.length, thousands.length])
-  .range(bluerange);
+var commonBluescale = d3.scale.quantize()
+  .domain([0, 0.1*thousands.length, 0.2*thousands.length, 0.5*thousands.length, thousands.length])
+  .range(emelieblue);
 
 // Creates a linear bluescale
 var blueText = d3.scale.linear()
@@ -519,18 +521,17 @@ var group2B = makeG(svg2);
 
 // Parameters
 
-var boxside = 16;
+var boxside = 18;
 var widthfactor = 20;
 var commoncolor = "#d7b8e3";
-var complexcolor = "#FFFFFF";
+var complexcolor = "#e0f9ee";
 var bgcolor = "#FFFFFF";
-var seetext = true;
+var seetext = false;
 var data1;
 var data2;
-var textsize = 8;
+var textsize = 10;
 
 // set the css initially, to the textsize
-$("#test").css("font-size", textsize + "pt");
 
 $( "#checkbox" ).change(function() {
   seetext = !seetext;
@@ -540,12 +541,43 @@ $( "#checkbox" ).change(function() {
 });
 
 
+// Draws text
+
+function drawText(text) {
+  text.classed("text", true)
+    .classed("word", true)
+    .text(function(d) {
+      return d.word;
+    })
+    .attr("x", function(d, i) {
+      return d.x;
+    })
+    .attr("y", function(d,i) {
+      return d.y * boxside;
+    })
+    .attr("dx", function(d) { return 2 + "px"; })
+    .attr("dy", textsize + 0.2 + "pt")
+    .attr("width", function(d) { return d.width; })
+    .attr("height", boxside)
+    .style("opacity", function(d) {
+      return seetext == true ? 1 : 0;
+    })
+    .style("font-size", textsize + "pt")
+    .style("letter-spacing", function(d) {
+      return d.add / (d.word.length -1) + "px";
+    })
+    // .style("font-weight", 100)
+    .style("fill", function(d) {
+        return d.common ? commonBluescale(d.commoni) : complexcolor;
+    });
+}
 
 // D3 happens
 // Draws rectangles
 
 function drawRect(rect) {
   rect.classed("word", true)
+    .classed("rect", true)
     .attr("x", function(d, i) {
       return d.x;
     })
@@ -563,42 +595,12 @@ function drawRect(rect) {
     })
     .style("stroke", "#FFFFFF")
     .style("stroke-width", function(d) {
-        return d.common ? "0.5pt" : "0pt";
+        return d.common ? "0.5pt" : "0.5pt";
     })
     ;
 }
 
-// Draws text
 
-function drawText(text) {
-  text.classed("text", true)
-    .classed("word", true)
-    .text(function(d) {
-      return d.word;
-    })
-    .attr("x", function(d, i) {
-      return d.x;
-    })
-    .attr("y", function(d,i) {
-      return d.y * boxside;
-    })
-    .attr("dx", function(d) { return 1.5 + "px"; })
-    .attr("dy", textsize + 1 + "pt")
-    .attr("width", function(d) { return d.width; })
-    .attr("height", boxside)
-    .style("opacity", function(d) {
-      return seetext == true ? 1 : 0;
-    })
-    .style("font-size", textsize + "pt")
-    .style("letter-spacing", function(d) {
-      return d.add / (d.word.length -1) + "px";
-    })
-    // .style("font-weight", 100)
-    .style("fill", function(d) {
-      //return d.common ? blueText(d.commoni) : "#64a344";
-      return d.common ? commonBluescale(d.commoni) : "#EEEEEE";
-    });
-}
 
 // Draw book
 
@@ -606,7 +608,6 @@ function drawBook(rect, text, words) {
 
   var bookrect = rect.selectAll("rect")
     .data(words);
-
   var booktext = text.selectAll("text")
     .data(words);
 
