@@ -105,7 +105,7 @@ p {
 }
 
 .text:hover {
-    opacity: 1 !important;
+    
 }
 
 .text {
@@ -115,9 +115,9 @@ p {
 }
 
 .word {
-  transition: opacity .10s ease-in-out;
-  -moz-transition: opacity .10s ease-in-out;
-  -webkit-transition: opacity .10s ease-in-out;
+  transition: opacity .20s ease-in-out;
+  -moz-transition: opacity .20s ease-in-out;
+  -webkit-transition: opacity .20s ease-in-out;
 }
 
 .full-spectrum .sp-palette {
@@ -425,14 +425,14 @@ function getText(txtfile, callback) {
 
 function start() {
 
-      getText( "books/littleprince.txt", function (lines) {
+      getText( "books/tinyprince.txt", function (lines) {
         var layout = layoutLines(lines);
         data1 = layout;
         drawBook(group1A, group1B, data1);
         // countWords(data1, "#result1");
         console.log(layout);
     });
-    getText( "books/hamlet.txt", function (lines) {
+    getText( "books/tinyhamlet.txt", function (lines) {
         var layout = layoutLines(lines);
         data2 = layout;
         drawBook(group2A, group2B, data2);
@@ -526,7 +526,7 @@ var widthfactor = 20;
 var commoncolor = "#d7b8e3";
 var complexcolor = "#e0f9ee";
 var bgcolor = "#FFFFFF";
-var seetext = false;
+var seetext = true;
 var data1;
 var data2;
 var textsize = 10;
@@ -535,7 +535,6 @@ var textsize = 10;
 
 $( "#checkbox" ).change(function() {
   seetext = !seetext;
-  console.log(seetext);
   drawBook(group1A, group1B, data1);
   drawBook(group2A, group2B, data2);
 });
