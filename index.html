@@ -77,13 +77,13 @@ p {
 }
 
 #book1 {
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 520px !important;
   margin-right: 10px
 }
 
 #book2 {
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 520px !important;
 }
 
@@ -92,7 +92,8 @@ p {
 }
 
 .rect:hover {
-    opacity: 0.1 !important;
+    fill: #f4fff9 !important;
+    opacity: 0.2 !important;
 }
 
 .rect {
@@ -101,7 +102,7 @@ p {
 .text {
   font-family: 'Merriweather', serif;
   font-stretch: extra-expanded;
-  pointer-events: none;
+/*  pointer-events: none;*/
 }
 
 .text:hover {
@@ -109,15 +110,15 @@ p {
 }
 
 .text {
-  transition: opacity .10s ease-in-out;
-  -moz-transition: opacity .10s ease-in-out;
-  -webkit-transition: opacity .10s ease-in-out;
+  transition: opacity .40s ease-in-out;
+  -moz-transition: opacity .40s ease-in-out;
+  -webkit-transition: opacity .40s ease-in-out;
 }
 
 .word {
-  transition: opacity .20s ease-in-out;
-  -moz-transition: opacity .20s ease-in-out;
-  -webkit-transition: opacity .20s ease-in-out;
+  transition: opacity .40s ease-in-out;
+  -moz-transition: opacity .40s ease-in-out;
+  -webkit-transition: opacity .40s ease-in-out;
 }
 
 .full-spectrum .sp-palette {
@@ -145,8 +146,8 @@ max-width: 200px;
 <div class=wrapper>
   <p class="tiny">
     <!-- <input type='text' id="full" style=""/>  Color of the common words.       -->
-    <input type='text' id="boxinput" class="input" placeholder='18'/>  &nbsp; &nbsp; Height of the 'rows'. Press enter to change. (The length of boxes doesn't change because it's determined by textsize) </br>
-    <input type='text' id="textsizeinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good. (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page).
+    <input type='text' id="boxinput" class="input" placeholder='8'/>  &nbsp; &nbsp; Height of the 'rows'. Press enter to change. (The length of boxes doesn't change because it's determined by textsize) </br>
+    <input type='text' id="textsizeinput" class="input" placeholder='4'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good. (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page).
   </p>
 
   <p class="tiny">
@@ -159,13 +160,15 @@ max-width: 200px;
 
   <p class="tiny">
     <form id="radios">
-  <input type="radio" name="thousands" value="one" checked>1000
-  <input type="radio" name="thousands" value="two">2000
-  <input type="radio" name="thousands" value="three">3000
-  <input type="radio" name="thousands" value="four">4000
-  <input type="radio" name="thousands" value="five">5000
+      <input type="radio" name="thousands" value="hundred" checked>100
+      <input type="radio" name="thousands" value="one">1000
+      <input type="radio" name="thousands" value="two">2000
+      <input type="radio" name="thousands" value="three">3000
+      <input type="radio" name="thousands" value="four">4000
+      <input type="radio" name="thousands" value="five">5000
 </form>
   </p>
+  <input type="range"min ="100" max="5000" step ="100" value ="100"/>
 </div>
 
 <span id="test">
@@ -309,15 +312,18 @@ $('#textsizeinput').keypress(function(event) {
       }
 });
 
-var one =   thousand1;
-var two =   thousand1.concat(thousand2);
-var three = thousand1.concat(thousand2).concat(thousand3);
-var four =  thousand1.concat(thousand2).concat(thousand3).concat(thousand4);
-var five =  thousand1.concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
+var oneh =  hundred;
+var one =   hundred.concat(thousand1);
+var two =   hundred.concat(thousand1).concat(thousand2);
+var three = hundred.concat(thousand1).concat(thousand2).concat(thousand3);
+var four =  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4);
+var five =  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
 
 
 $("input[name=thousands]:radio").change(function () {
-    if ( $('input[name=thousands]:checked', '#radios').val() == "one") {
+    if ( $('input[name=thousands]:checked', '#radios').val() == "hundred") {
+      thousands = oneh;
+    } else if ( $('input[name=thousands]:checked', '#radios').val() == "one") {
       thousands = one;
     } else if ( $('input[name=thousands]:checked', '#radios').val() == "two") {
       thousands = two;
@@ -338,6 +344,12 @@ $("input[name=thousands]:radio").change(function () {
 
     draw();
 });
+
+$( "#checkbox" ).change(function() {
+  seetext = $(this).prop('checked');
+  draw();
+});
+
 
 $( "#checkboxsort" ).change(function() {
   if ($(this).prop('checked'))
@@ -521,7 +533,10 @@ function sort() {
     }
 
     sortedline.sort(function(a,b) {
-      return commonIndex(clean(getWord(a))) - commonIndex(clean(getWord(b)))
+      var common = commonIndex(clean(getWord(a))) - commonIndex(clean(getWord(b)));
+      return common != 0
+          ? common
+          : a.index - b.index;
     });
 
     return [sortedline];
@@ -543,24 +558,19 @@ function reflow() {
 function setCommonAndScales() {
   computeCommon();
 
-  bwcolor.domain([0, thousands.length-1]);
-
   // Creates a linear bluescale
-  commonBluescale.domain([0, 0.1*thousands.length, 0.2*thousands.length, 0.5*thousands.length, thousands.length]);
+  commonBluescale.domain([100, 1000, 2000, 3000, 4000, 5000]);
 }
 
 // runs when all is loaded
 jQuery(function() {
-
   setCommonAndScales();
   start();
-
 });
 
-var thousands = thousand1;
-
-// create an object of the common words: "Word" : index
+// Creates an object of the common words: "Word" : index
 var commonObj = {};
+
 function computeCommon() {
   commonObj = {};
   for (var i = 0; i < thousands.length; i++) {
@@ -572,46 +582,31 @@ function computeCommon() {
 function isCommon(word) {
   return commonObj[word] != undefined;
 }
+
+// Returns to common-index of the word
 function commonIndex(word) {
-  return commonObj[word] != undefined ? commonObj[word] : thousands.length;
+  return commonObj[word] != undefined ? commonObj[word] : 5000;
 }
+
+// Returned the cleaned up word
 function clean(word) {
   return word.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase();
 }
-// Counts words and sends the result to target div
-function countWords(words, target) {
 
-  //words.filter genererar en lista av alla words där isCommon = true
-  var commonNo = words.filter(isCommon).length;
-  var complexNo = words.length - commonNo;
+// // Counts words and sends the result to target div
+// function countWords(words, target) {
+//   //words.filter genererar en lista av alla words där isCommon = true
+//   var commonNo = words.filter(isCommon).length;
+//   var complexNo = words.length - commonNo;
 
-  var percent = commonNo/(commonNo+complexNo)*100;
+//   var percent = commonNo/(commonNo+complexNo)*100;
 
-  $(target).html("<p>" + Math.round(percent) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
+//   $(target).html("<p>" + Math.round(percent) +"% written with hundred most common words </p> <p>" + (commonNo+complexNo) + " words in total </p>" );
 
-}
-
-var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
-var emelieblue = ["#117475", "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
-
-// Creates a linear color scale
-var bwcolor = d3.scale.linear()
-  .domain([0, thousands.length-1])
-  .range(colorbrewer.Greys[2]);
-
-// Creates a linear opacity scale
-var opacityscale = d3.scale.linear()
-  .domain([ 0, 10])
-  .range([1, 0.5]);
-
-// Creates a linear bluescale
-var commonBluescale = d3.scale.quantize()
-  .domain([0, 0.1*thousands.length, 0.2*thousands.length, 0.5*thousands.length, thousands.length])
-  .range(emelieblue);
+// }
 
 
 // D3 SVG and group layout
-
 function drawSVG(foo) {
   return foo.append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -622,11 +617,14 @@ function drawSVG(foo) {
     ;
 }
 
+// function to append group to whatever is passed
 function makeG(foo) {
   return foo.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
+
+// SVG layout
 var svg1 = drawSVG(d3.select("#book1"));
 var svg2 = drawSVG(d3.select("#book2"));
 
@@ -636,13 +634,14 @@ var group2B = makeG(svg2);
 var group2A = makeG(svg2);
 
 
-// Parameters
 
+// Parameters & variables
+var thousands = hundred;
 var animationTime = 2000;
-var boxside = 18;
+var boxside = 8;
 var widthfactor = 20;
 var commoncolor = "#d7b8e3";
-var complexcolor = "#e0f9ee";
+var complexcolor = "#DCFFEE";
 var seetext = false;
 var isSorted = false;
 var lines1;
@@ -652,16 +651,32 @@ var lastLayoutInput2;
 var lastJustifyForce = false;
 var data1;
 var data2;
-var textsize = 10;
-
-// set the css initially, to the textsize
-
-$( "#checkbox" ).change(function() {
-  seetext = $(this).prop('checked');
-  draw();
-});
+var textsize = 4;
+var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
+var neueblue = ["#117475", "#26948B", "#43B5A5" , "#64D4BB", "#93E8D1", "#BDF7E0", "#DCFFEE"];
+var emelieblue = ["#117475", "#21827B", "#2B9992" , "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
 
 
+// Creates a linear bluescale
+var commonBluescale = d3.scale.threshold()
+  .domain([100, 1000, 2000, 3000, 4000, 5000])
+  .range(neueblue);
+
+
+function flash(name, dy) {
+  return function() {
+    d3.select(this).append("text")
+        .attr("class", name)
+        .attr("transform", "translate(" + d3.mouse(this) + ")")
+        .attr("dy", dy)
+        .text(name)
+      .transition()
+        .duration(1500)
+        .style("opacity", 0)
+        .remove();
+  };
+}
+// D3 happens
 // Draws text
 
 function drawText(text) {
@@ -671,7 +686,7 @@ function drawText(text) {
       return d.word;
     })
     .style("opacity", function(d) {
-      return seetext == true ? 1 : 0;
+      return seetext ? 1 : 0;
     })
     .style("font-size", textsize + "pt")
     .style("letter-spacing", function(d) {
@@ -679,8 +694,12 @@ function drawText(text) {
     })
     // .style("font-weight", 100)
     .style("fill", function(d) {
-        return "#000000"
+        return "#117475";
     })
+    .on("mouseenter", flash("mouseenter", "-1em"))
+    .on("mouseover", flash("mouseover", "0"))
+    .on("mouseout", flash("mouseout", "1em"))
+    .on("mouseleave", flash("mouseleave", "2em"))
 
     .transition().duration(animationTime).ease("cubic-out")
     .attr("x", function(d, i) {
@@ -689,13 +708,12 @@ function drawText(text) {
     .attr("y", function(d,i) {
       return d.y * boxside;
     })
-    .attr("dx", function(d) { return 2 + "px"; })
-    .attr("dy", textsize + 0.2 + "pt")
+    .attr("dx", function(d) { return 1 + "px"; })
+    .attr("dy", textsize + 0.5 + "pt")
     .attr("width", function(d) { return d.width; })
     .attr("height", boxside);
 }
 
-// D3 happens
 // Draws rectangles
 
 function drawRect(rect) {
@@ -703,7 +721,7 @@ function drawRect(rect) {
     .classed("word", true)
     .classed("rect", true)
     .style("fill", function(d) {
-        return d.common ? commonBluescale(d.commoni) : complexcolor;
+        return commonBluescale(d.commoni);
     })
     .style("opacity", function(d) {
       return 1;
