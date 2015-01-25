@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="UTF-8">
-    <link href='http://fonts.googleapis.com/css?family=Merriweather:300italic,300' rel='stylesheet' type='text/css'>
+    <script src="//ajax.googleapis.com/ajax/libs/webfont/1.5.10/webfont.js"></script>
     <link rel='stylesheet' href='spectrum.css'/>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
@@ -18,6 +18,7 @@
 
 body {
   font-family: 'Merriweather', serif;
+  font-size: 12pt;
 }
 
 h2 {
@@ -33,6 +34,7 @@ p {
   line-height: 26px;
   margin-left: 40px;
 }
+
 #wrapper {
   width: 800px;
   height: 700px;
@@ -71,7 +73,6 @@ p {
 #test {
   font-family: 'Merriweather', serif;
   font-stretch: extra-expanded;
-  font-size: 11pt;
   position: fixed;
   left: -99999px;
 }
@@ -135,9 +136,9 @@ max-width: 200px;
   font-weight: 300;
 }
 
-
 #legend {
   /*padding: 1.5em 0 0 1.5em;*/
+
 }
 
 ul {
@@ -150,7 +151,7 @@ li.key {
   border-top-style: solid;
   font-size: .75em;
   text-align: right;
-  width: 10%;
+  width: 8%;
   padding-left: 0;
   padding-right: 0;
 }
@@ -173,10 +174,11 @@ li.key {
 
 <!-- wrapper for the top section that contains the toggle/controls to change color etc -->
 <div class=wrapper>
+
   <p class="tiny">
     <!-- <input type='text' id="full" style=""/>  Color of the common words.       -->
     <input type='text' id="boxinput" class="input" placeholder='8'/>  &nbsp; &nbsp; Height of the 'rows'. Press enter to change. (The length of boxes doesn't change because it's determined by textsize) </br>
-    <input type='text' id="textsizeinput" class="input" placeholder='4'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good.
+    <input type='text' id="textsizeinput" class="input" placeholder='10'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good.
   </p>
 
   <p class="tiny">
@@ -185,18 +187,6 @@ li.key {
     
     <!-- <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change) -->
   </p>
-
-  <p class="tiny">
-    <form id="radios">
-      <input type="radio" name="thousands" value="hundred" checked>100
-      <input type="radio" name="thousands" value="one">1000
-      <input type="radio" name="thousands" value="two">2000
-      <input type="radio" name="thousands" value="three">3000
-      <input type="radio" name="thousands" value="four">4000
-      <input type="radio" name="thousands" value="five">5000
-</form>
-  </p>
-  <input type="range"min ="0" max="5000" step ="1000" value ="100"/>
 </div>
 
 <span id="test">
@@ -247,38 +237,14 @@ $('#textsizeinput').keypress(function(event) {
       }
 });
 
-var oneh =  hundred;
-var one =   hundred.concat(thousand1);
-var two =   hundred.concat(thousand1).concat(thousand2);
-var three = hundred.concat(thousand1).concat(thousand2).concat(thousand3);
-var four =  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4);
-var five =  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5);
-
-
-$("input[name=thousands]:radio").change(function () {
-    if ( $('input[name=thousands]:checked', '#radios').val() == "hundred") {
-      thousands = oneh;
-    } else if ( $('input[name=thousands]:checked', '#radios').val() == "one") {
-      thousands = one;
-    } else if ( $('input[name=thousands]:checked', '#radios').val() == "two") {
-      thousands = two;
-    } else if ( $('input[name=thousands]:checked', '#radios').val() == "three") {
-      thousands = three;
-    } else if ( $('input[name=thousands]:checked', '#radios').val() == "four") {
-      thousands = four;
-    } else if ( $('input[name=thousands]:checked', '#radios').val() == "five") {
-      thousands = five;
-    }
-
-    setCommonAndScales();
-
-    if (isSorted)
-      sort();
-    else
-      reset();
-
-    draw();
-});
+var viewArray = [
+  hundred,
+  hundred.concat(thousand1),
+  hundred.concat(thousand1).concat(thousand2),
+  hundred.concat(thousand1).concat(thousand2).concat(thousand3),
+  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4),
+  hundred.concat(thousand1).concat(thousand2).concat(thousand3).concat(thousand4).concat(thousand5)
+];
 
 $( "#checkbox" ).change(function() {
   seetext = $(this).prop('checked');
@@ -303,6 +269,29 @@ $( "#checkboxsort" ).change(function() {
 var margin = {top: 0, right: 20, bottom: 0, left: 20},
 width = 390 - margin.left - margin.right,
 height = 5000 - margin.top - margin.bottom;
+
+
+// Parameters & variables
+var textsize = 10;
+var boxside = 8;
+var seetext = false;
+var isSorted = false;
+var lastJustifyForce = false;
+var viewArrayi = 0;
+var thousands = viewArray[viewArrayi];
+var animationTime = 2000;
+
+var lines1;
+var lines2;
+var lastLayoutInput1;
+var lastLayoutInput2;
+var data1;
+var data2;
+
+var strokecolor = "#FFFFFF"
+var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
+var neueblue = ["#117475", "#26948B", "#43B5A5" , "#64D4BB", "#93E8D1", "#BDF7E0", "#DCFFEE"];
+var emelieblue = ["#117475", "#21827B", "#2B9992" , "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
 
 
 // function to get width of a text in html
@@ -491,16 +480,39 @@ function reflow() {
 };
 
 function setCommonAndScales() {
+  thousands = viewArray[viewArrayi];
   computeCommon();
+  $("#test").css("font-size", textsize + "pt");
+
 
   // would change the domain of the bluescale
   //blueScale.domain([100, 1000, 2000, 3000, 4000, 5000]);
 }
 
+var fontsloaded = false;
+var jQueryloaded = false;
+
 // runs when all is loaded
+function tryStart() {
+  if (fontsloaded && jQueryloaded) {
+    setCommonAndScales();
+    start();
+  }
+}
+
+WebFont.load({
+  google: {
+    families: ['Merriweather']
+  },
+  active: function() {
+    fontsloaded = true;
+    tryStart();
+  }
+});
+
 jQuery(function() {
-  setCommonAndScales();
-  start();
+  jQueryloaded = true;
+  tryStart();
 });
 
 // Creates an object of the common words: "Word" : index
@@ -569,28 +581,6 @@ var group2A = makeG(svg2);
 
 
 
-// Parameters & variables
-var textsize = 4;
-var boxside = 8;
-var seetext = false;
-var isSorted = false;
-var lastJustifyForce = false;
-var thousands = hundred;
-var animationTime = 2000;
-
-var lines1;
-var lines2;
-var lastLayoutInput1;
-var lastLayoutInput2;
-var data1;
-var data2;
-
-var strokecolor = "#FFFFFF"
-var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
-var neueblue = ["#117475", "#26948B", "#43B5A5" , "#64D4BB", "#93E8D1", "#BDF7E0", "#DCFFEE"];
-var emelieblue = ["#117475", "#21827B", "#2B9992" , "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
-
-
 // Creates a linear blueScale
 var blueScale = d3.scale.threshold()
   .domain([100, 1000, 2000, 3000, 4000, 5000])
@@ -603,28 +593,36 @@ var legend = d3.select('#legend')
 var keys = legend.selectAll('li.key')
     .data(blueScale.range());
 
+// Lay out li's and give them values and colors after the scale
+var getViewArrayi = 0
 keys.enter().append('li')
     .attr('class', 'key')
+    .attr('value', function(d) {
+      // var r = blueScale.invertExtent(d);
+      // return r[1] ? r[1] : "rare";
+      return getViewArrayi++;
+    })
     .style('border-top-color', String)
-    .text(function(d) {
+    .html(function(d) {
         var r = blueScale.invertExtent(d);
-        return r[1] ? r[1] : "rare";
+        return r[1] ? "&#8804; " + r[1] : "rest";
 ;    });
 
 
-function flash(name, dy) {
-  return function() {
-    d3.select(this).append("text")
-        .attr("class", name)
-        .attr("transform", "translate(" + d3.mouse(this) + ")")
-        .attr("dy", dy)
-        .text(name)
-      .transition()
-        .duration(1500)
-        .style("opacity", 0)
-        .remove();
-  };
-}
+$(".list-inline li").click(function(){
+    var value = $(this).attr('value');
+    viewArrayi = value;
+    setCommonAndScales();
+
+    if (isSorted)
+      sort();
+    else
+      reset();
+
+    draw();
+});
+
+
 // D3 happens
 // Draws text
 
@@ -645,10 +643,6 @@ function drawText(text) {
     .style("fill", function(d) {
         return "#117475";
     })
-    .on("mouseenter", flash("mouseenter", "-1em"))
-    .on("mouseover", flash("mouseover", "0"))
-    .on("mouseout", flash("mouseout", "1em"))
-    .on("mouseleave", flash("mouseleave", "2em"))
 
     .transition().duration(animationTime).ease("cubic-out")
     .attr("x", function(d, i) {
