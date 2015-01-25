@@ -136,6 +136,35 @@ max-width: 200px;
 }
 
 
+#legend {
+  /*padding: 1.5em 0 0 1.5em;*/
+}
+
+ul {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+li.key {
+  border-top-width: 15px;
+  border-top-style: solid;
+  font-size: .75em;
+  text-align: right;
+  width: 10%;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+
+.list-inline>li {
+  display: inline-block;
+}
+
+
 
 </style>
 </head>
@@ -147,13 +176,12 @@ max-width: 200px;
   <p class="tiny">
     <!-- <input type='text' id="full" style=""/>  Color of the common words.       -->
     <input type='text' id="boxinput" class="input" placeholder='8'/>  &nbsp; &nbsp; Height of the 'rows'. Press enter to change. (The length of boxes doesn't change because it's determined by textsize) </br>
-    <input type='text' id="textsizeinput" class="input" placeholder='4'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good. (This one takes a really long time to draw. because it has to recalculate the whole layot and positioning of every word. It's like when first loading the page).
+    <input type='text' id="textsizeinput" class="input" placeholder='4'/>  &nbsp; &nbsp; Textsize. usually about half of Height is good.
   </p>
 
   <p class="tiny">
-    <input type='text' id="full2" style=""/>  Color of the complex words.
     <input type='checkbox' id="checkbox" style=""/> See the text.
-    <input type='checkbox' id="checkboxsort"/> Sort
+    <input type='checkbox' id="checkboxsort"/> Sort by complexity
     
     <!-- <input type='text' id="widthinput" class="input" placeholder='word'/>  &nbsp; &nbsp; Length of the boxes compared to height. 1 = square. (Press enter to change) -->
   </p>
@@ -168,7 +196,7 @@ max-width: 200px;
       <input type="radio" name="thousands" value="five">5000
 </form>
   </p>
-  <input type="range"min ="100" max="5000" step ="100" value ="100"/>
+  <input type="range"min ="0" max="5000" step ="1000" value ="100"/>
 </div>
 
 <span id="test">
@@ -179,7 +207,8 @@ max-width: 200px;
   <h1>The colors of books</h1>
   <h2>- Judging a book by its colors</h2>
 </br>
-  <div id="wrapper1">
+<div id="legend"><small>Commonness of the word <i>(100 = one of the 100 most common english words etc.)</i></small></div>
+  <div id="wrapper1"> 
     <div id="title1"><p>The little prince </br>Antoine de Saint-Exupéry 1943</p></div>
     <div id="book1" class="book"></div>
     <div id="result1"></div>
@@ -195,98 +224,10 @@ max-width: 200px;
 
 <script type="text/javascript">
 
+
+
 /// TOGGLES 
 
-$("#full").spectrum({
-    color: "#FFFFFF",
-    showInput: true,
-    className: "full-spectrum",
-    showInitial: true,
-    showPalette: true,
-    showSelectionPalette: true,
-    maxPaletteSize: 10,
-    preferredFormat: "hex",
-    localStorageKey: "spectrum.demo",
-    move: function (color) {
-        
-    },
-    show: function () {
-    
-    },
-    beforeShow: function () {
-    
-    },
-    hide: function () {
-    
-    },
-    change: function(color) {
-      commoncolor = color.toHexString(); // #ff0000
-      console.log(commoncolor);
-      draw();
-        
-    },
-    palette: [
-        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
-        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
-        ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
-        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
-        ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
-        "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
-        "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
-        "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
-        "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
-        "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
-        "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
-        "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
-        "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
-        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
-    ]
-});
-
-$("#full2").spectrum({
-    color: "#D2E4C4",
-    showInput: true,
-    className: "full-spectrum",
-    showInitial: true,
-    showPalette: true,
-    showSelectionPalette: true,
-    maxPaletteSize: 10,
-    preferredFormat: "hex",
-    localStorageKey: "spectrum.demo",
-    move: function (color) {
-        
-    },
-    show: function () {
-    
-    },
-    beforeShow: function () {
-    
-    },
-    hide: function () {
-    
-    },
-    change: function(color) {
-      complexcolor = color.toHexString(); // #ff0000
-      console.log(complexcolor);
-      draw();
-    },
-    palette: [
-        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
-        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
-        ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
-        "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
-        ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
-        "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
-        "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
-        "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
-        "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
-        "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
-        "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
-        "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
-        "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
-        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
-    ]
-});
 
 
 $('#boxinput').keypress(function(event) {
@@ -296,12 +237,6 @@ $('#boxinput').keypress(function(event) {
       }
 });
 
-$('#widthinput').keypress(function(event) {
-      if (event.keyCode == 13) {
-          widthfactor = $("#widthinput").attr('value') *1;
-          draw();
-      }
-});
 
 $('#textsizeinput').keypress(function(event) {
       if (event.keyCode == 13) {
@@ -558,8 +493,8 @@ function reflow() {
 function setCommonAndScales() {
   computeCommon();
 
-  // Creates a linear bluescale
-  commonBluescale.domain([100, 1000, 2000, 3000, 4000, 5000]);
+  // would change the domain of the bluescale
+  //blueScale.domain([100, 1000, 2000, 3000, 4000, 5000]);
 }
 
 // runs when all is loaded
@@ -613,7 +548,6 @@ function drawSVG(foo) {
     .attr("height", height + margin.bottom + margin.top)
     .style("margin-left", -margin.left)
     .style("margin.right", -margin.right)
-    .style("fill", complexcolor)
     ;
 }
 
@@ -636,31 +570,46 @@ var group2A = makeG(svg2);
 
 
 // Parameters & variables
-var thousands = hundred;
-var animationTime = 2000;
+var textsize = 4;
 var boxside = 8;
-var widthfactor = 20;
-var commoncolor = "#d7b8e3";
-var complexcolor = "#DCFFEE";
 var seetext = false;
 var isSorted = false;
+var lastJustifyForce = false;
+var thousands = hundred;
+var animationTime = 2000;
+
 var lines1;
 var lines2;
 var lastLayoutInput1;
 var lastLayoutInput2;
-var lastJustifyForce = false;
 var data1;
 var data2;
-var textsize = 4;
+
+var strokecolor = "#FFFFFF"
 var firstblue = ["#003478", "#335D93", "#6685AE", "#99AEC9", "#CCD6E4"];
 var neueblue = ["#117475", "#26948B", "#43B5A5" , "#64D4BB", "#93E8D1", "#BDF7E0", "#DCFFEE"];
 var emelieblue = ["#117475", "#21827B", "#2B9992" , "#47ADA5", "#74D2C5", "#A2E8D7", "#DCFFEE"];
 
 
-// Creates a linear bluescale
-var commonBluescale = d3.scale.threshold()
+// Creates a linear blueScale
+var blueScale = d3.scale.threshold()
   .domain([100, 1000, 2000, 3000, 4000, 5000])
   .range(neueblue);
+
+var legend = d3.select('#legend')
+  .append('ul')
+    .attr('class', 'list-inline');
+
+var keys = legend.selectAll('li.key')
+    .data(blueScale.range());
+
+keys.enter().append('li')
+    .attr('class', 'key')
+    .style('border-top-color', String)
+    .text(function(d) {
+        var r = blueScale.invertExtent(d);
+        return r[1] ? r[1] : "rare";
+;    });
 
 
 function flash(name, dy) {
@@ -721,15 +670,19 @@ function drawRect(rect) {
     .classed("word", true)
     .classed("rect", true)
     .style("fill", function(d) {
-        return commonBluescale(d.commoni);
+        return blueScale(d.commoni);
     })
     .style("opacity", function(d) {
       return 1;
-      //return d.common ? 0.9 : opacityscale(d.word.length) *0.7;
     })
-    .style("stroke", "#FFFFFF")
+    .style("stroke", function(d) {
+      return strokecolor;
+    })
     .style("stroke-width", function(d) {
         return d.common ? "0.5pt" : "0.5pt";
+    })
+    .style("stroke-opacity", function(d) {
+        return 0.4;
     })
 
     .transition().duration(animationTime).ease("cubic-out")
