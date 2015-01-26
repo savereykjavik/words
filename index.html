@@ -37,7 +37,7 @@ p {
 
 #wrapper {
   width: 800px;
-  height: 700px;
+  height: 800px;
   margin-left: auto;
   margin-right: auto;
   padding-top: 40px;
@@ -211,6 +211,13 @@ li.key {
   </div>
 </div>
 </br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
+
 
 <script type="text/javascript">
 
@@ -231,7 +238,7 @@ $('#boxinput').keypress(function(event) {
 $('#textsizeinput').keypress(function(event) {
       if (event.keyCode == 13) {
           textsize = $("#textsizeinput").attr('value') *1;
-          $("#test").css("font-size", textsize + "pt");
+          //$("#test").css("font-size", textsize + "pt");
           reflow();
           draw();
       }
@@ -272,14 +279,15 @@ height = 5000 - margin.top - margin.bottom;
 
 
 // Parameters & variables
-var textsize = 10;
+var textsize = 4;
 var boxside = 8;
-var seetext = false;
+var seetext = true;
 var isSorted = false;
 var lastJustifyForce = false;
-var viewArrayi = 0;
+var viewArrayi = 5;
 var thousands = viewArray[viewArrayi];
 var animationTime = 2000;
+var coloranimationTime = 1000;
 
 var lines1;
 var lines2;
@@ -482,7 +490,7 @@ function reflow() {
 function setCommonAndScales() {
   thousands = viewArray[viewArrayi];
   computeCommon();
-  $("#test").css("font-size", textsize + "pt");
+  //$("#test").css("font-size", textsize + "pt");
 
 
   // would change the domain of the bluescale
@@ -580,7 +588,6 @@ var group2B = makeG(svg2);
 var group2A = makeG(svg2);
 
 
-
 // Creates a linear blueScale
 var blueScale = d3.scale.threshold()
   .domain([100, 1000, 2000, 3000, 4000, 5000])
@@ -592,6 +599,7 @@ var legend = d3.select('#legend')
 
 var keys = legend.selectAll('li.key')
     .data(blueScale.range());
+
 
 // Lay out li's and give them values and colors after the scale
 var getViewArrayi = 0
@@ -606,7 +614,7 @@ keys.enter().append('li')
     .html(function(d) {
         var r = blueScale.invertExtent(d);
         return r[1] ? "&#8804; " + r[1] : "rest";
-;    });
+    });
 
 
 $(".list-inline li").click(function(){
@@ -644,7 +652,7 @@ function drawText(text) {
         return "#117475";
     })
 
-    .transition().duration(animationTime).ease("cubic-out")
+    .transition().duration(animationTime).ease("quad-out")
     .attr("x", function(d, i) {
       return d.x;
     })
@@ -663,9 +671,6 @@ function drawRect(rect) {
   rect
     .classed("word", true)
     .classed("rect", true)
-    .style("fill", function(d) {
-        return blueScale(d.commoni);
-    })
     .style("opacity", function(d) {
       return 1;
     })
@@ -673,13 +678,19 @@ function drawRect(rect) {
       return strokecolor;
     })
     .style("stroke-width", function(d) {
-        return d.common ? "0.5pt" : "0.5pt";
+        return d.common ? "0.5pt" : "0.8pt";
     })
     .style("stroke-opacity", function(d) {
-        return 0.4;
+        return 0.6;
+    })
+    .attr("rx", 0.2)
+    .attr("ry", 0.2)
+
+    .style("fill", function(d) {
+        return blueScale(d.commoni);
     })
 
-    .transition().duration(animationTime).ease("cubic-out")
+    .transition().duration(animationTime).ease("quad-out")
     .attr("x", function(d, i) {
       return d.x;
     })
